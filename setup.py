@@ -4,6 +4,7 @@ setup(
     name='auxpump',
     version='1.0',
     packages=find_packages(),
+    data_files=[('', ['auxpump/config.json'])],
     license='MIT',
     description='',
     long_description=open('README.md').read(),
