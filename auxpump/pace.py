@@ -19,17 +19,20 @@ class PACEDeckPumps(OffDeckCulturePumps):
 
 class LBPumps(NetworkDeckPumps):
 
-    def bleach_clean(self):
-        self._run('clean')
+    def bleach_clean(self, vol=35):
+        self._run('clean', str(vol))
 
     def prime(self):
         self._run('prime')
 
-    def refill(self, vol=4.0): # mL
+    def refill(self, vol=50): # mL
         self._run('fresh', str(vol))
 
-    def empty(self, vol=6.0):
+    def empty(self, vol=60):
         self._run('empty', str(vol))
 
-    def refill_rinse(self): # TODO: Probably remove
-        self._run('refill_rinse')
+    def fill_water(self, vol=50):
+        self._run_direct({'res_water':vol})
+
+    def fill_bleach(self, vol=50):
+        self._run_direct({'res_bleach':vol})

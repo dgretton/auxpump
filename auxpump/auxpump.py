@@ -9,14 +9,18 @@ class NetworkDeckPumps:
     def __init__(self, disable=False):
         self.pump_bat_path = os.path.join(os.path.dirname(PACKAGE_PATH), 'auxpump_bat')
         self.disabled = disable
+        self._remote_exec('.', _REMOTE_ABORT_SCRIPT) # '.' for source. Halt any previously running program.
 
     def _run(self, run_cmd, *run_args):
         remote_cmd_tup = ('python', _REMOTE_RUN_SCRIPT, run_cmd, *run_args)
+        logging.info('Running deck pump action "' + run_cmd + '" with ' + 
+                ('args ' + ', '.join(run_args) if run_args else 'no args'))
+        self._remote_exec(*remote_cmd_tup)
+
+    def _remote_exec(self, *remote_cmd_tup):
         if self.disabled: 
             logging.info(str(remote_cmd_tup) + ' would be executed remotely here')
             return
-        logging.info('Running deck pump action "' + run_cmd + '" with ' + 
-                ('args ' + ', '.join(run_args) if run_args else 'no args'))
         remote_exec(*remote_cmd_tup)
 
     def _run_direct(self, pump_ids_to_vols):
@@ -33,4 +37,4 @@ class NetworkDeckPumps:
         return self
 
     def __exit__(self, *args):
-        remote_exec('.', _REMOTE_ABORT_SCRIPT) # '.' for source
+        self._remote_exec('.', _REMOTE_ABORT_SCRIPT) # '.' for source

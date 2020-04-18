@@ -1,5 +1,6 @@
 import os
 from auxpump import TEMP_PATH, CONFIG
+import time
 
 def remote_exec(cmd, *args):
     temp_ver = 0
@@ -14,8 +15,11 @@ def remote_exec(cmd, *args):
             temp_sh.write(cmd)
         os.system('plink ' + CONFIG['putty_session'] + ' -m ' + fname)
     finally:
-        try:
-            os.remove(fname)
-        except FileNotFoundError:
-            pass
+        for _ in range(4):
+            try:
+                os.remove(fname)
+                break
+            except OSError:
+                time.sleep(.05)
+                continue
 
